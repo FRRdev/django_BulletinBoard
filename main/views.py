@@ -55,19 +55,19 @@ class BBLogoutView(LoginRequiredMixin, LogoutView):
 
 
 # user data edit controller
-class ChangeUserInfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):  # 1-для выв всплыв сообщений
+class ChangeUserInfoView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = AdvUser
     template_name = 'main/change_user_info.html'
     form_class = ChangeUserInfoForm
     success_url = reverse_lazy('main:profile')
     success_message = 'Личные данные пользователя изменены'
 
-    def dispatch(self, request, *args, **kwargs):  # получение ключа текущего пользователя
+    def dispatch(self, request, *args, **kwargs):
         self.user_id = request.user.pk
         return super().dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
-        if not queryset:  # сначала проверем есть ли тут набор записей
+        if not queryset:
             queryset = self.get_queryset()
         return get_object_or_404(queryset, pk=self.user_id)
 
@@ -119,13 +119,13 @@ class DeleteUserView(LoginRequiredMixin, DeleteView):
         self.user_id = request.user.pk
         return super().dispatch(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):  # перед удаление необходимо произвести выход
+    def post(self, request, *args, **kwargs):
         logout(request)
         messages.add_message(request, messages.SUCCESS,
                              'Пользователь удалён')
         return super().post(request, *args, **kwargs)
 
-    def get_object(self, queryset=None):  # по ключу нашли обьект для удаления
+    def get_object(self, queryset=None):
         if not queryset:
             queryset = self.get_queryset()
         return get_object_or_404(queryset, pk=self.user_id)
